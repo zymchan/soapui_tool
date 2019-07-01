@@ -5,7 +5,7 @@
     <p>确保电脑安装了maven</p>
     <p>安装SoapUI, 记住SoapUI的安装路径，将bin目录加入电脑的path中，例如我的就是：C:\Program Files\SmartBear\SoapUI-5.5.0\bin</p>    
     <p>获取项目，在项目的根目录执行mvn clean install，会在target目录下生成jar包，取有相关依赖那个，修改jar包名称为soap_tool.jar</p>
-    <p>解压项目中的ext.zip文件，姜里面jar包放入soapui的ext目录中</p>
+    <p>解压项目中的ext.zip文件，把里面jar包放入soapui的ext目录中</p>
     
 
 <h2>用法</h2>
