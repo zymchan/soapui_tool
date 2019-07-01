@@ -1,5 +1,6 @@
 package soap.util;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import java.io.*;
@@ -44,13 +45,23 @@ public class StringUtil {
 
 
     public static String getFileContent(String filePath) throws IOException {
-        String str = "";
+        String str;
         InputStream is = new FileInputStream(filePath);
         int iAvail = is.available();
         byte[] bytes = new byte[iAvail];
         is.read(bytes);
         str = new String(bytes);
         is.close();
+        return str;
+    }
+    
+    public static String getFileContent(InputStream inputStream) throws IOException {
+        String str;      
+        int iAvail = inputStream.available();
+        byte[] bytes = new byte[iAvail];
+        inputStream.read(bytes);
+        str = new String(bytes);
+        inputStream.close();
         return str;
     }
 
@@ -67,5 +78,22 @@ public class StringUtil {
         FileWriter out = new FileWriter(fileName);
         document.write(out);
         out.close();
+    }
+
+    public static void runCMD(String cmd) throws IOException, InterruptedException {
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println(cmd);
+        Process process = runtime.exec("cmd /c start cmd.exe /K \" " + cmd + "&& exit\"");
+        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        String line = null;
+
+        while ((line = input.readLine()) != null) {
+            System.out.println(line);
+        }
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        runCMD("testrunner.bat C:\\Users\\q1425712\\Desktop\\workspace\\soapui_tool\\target\\20190701143852\\project.xml");
     }
 }

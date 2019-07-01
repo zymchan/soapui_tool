@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 public class SqlUtil {
     private static final Logger logger = Logger.getLogger(SqlUtil.class.getName());
 
-    private static Connection getConnection() throws Exception {
+    private static Connection getConnection() {
         try {
             String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
             Class.forName(driverName);
@@ -48,13 +48,13 @@ public class SqlUtil {
 
     public static ArrayList<HashMap<String, Object>> executeQuery(String SQL) {
         ResultSet rs = query(SQL);
-        ArrayList<HashMap<String, Object>> array = new ArrayList<HashMap<String, Object>>();
+        ArrayList<HashMap<String, Object>> array = new ArrayList<>();
         try {
             ResultSetMetaData data;
             if (rs != null) {
                 data = rs.getMetaData();
                 while (rs.next()) {
-                    HashMap<String, Object> map = new HashMap<String, Object>();
+                    HashMap<String, Object> map = new HashMap<>();
                     for (int i = 1; i <= data.getColumnCount(); i++) {
                         String key = data.getColumnName(i);
                         Object value = rs.getObject(i);

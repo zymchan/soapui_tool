@@ -3,13 +3,12 @@ package soap;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.junit.Test;
-import soap.util.ExcelReader;
+import soap.util.ExcelUtil;
 import soap.util.StringUtil;
 import soap.util.TestCaseSet;
 
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -17,10 +16,12 @@ import java.util.*;
 
 public class GenerateSoapUIProject {
 
-    String projectPath = GenerateSoapUIProject.class.getClassLoader().getResource("demoProject.xml").getPath();
-    String suitePath = GenerateSoapUIProject.class.getClassLoader().getResource("demoSuite.xml").getPath();
-    String loadScriptPath = GenerateSoapUIProject.class.getClassLoader().getResource("ProjectLoadScript.groovy").getPath();
-    String tearDownScriptPath = GenerateSoapUIProject.class.getClassLoader().getResource("ProjectTearDown.groovy").getPath();
+    static InputStream projectStream = GenerateSoapUIProject.class.getClassLoader().getResourceAsStream("demoProject.xml");
+    static InputStream suiteStream = GenerateSoapUIProject.class.getClassLoader().getResourceAsStream("demoSuite.xml");
+    static InputStream loadScriptStream = GenerateSoapUIProject.class.getClassLoader().getResourceAsStream("ProjectLoadScript.groovy");
+    static InputStream tearDownScriptStream = GenerateSoapUIProject.class.getClassLoader().getResourceAsStream("ProjectTearDown.groovy");
+    static InputStream configStream = GenerateSoapUIProject.class.getClassLoader().getResourceAsStream("config.properties");
+
 
     @Test
     public void test() throws Exception {
@@ -32,7 +33,7 @@ public class GenerateSoapUIProject {
         generateSoapUIProject(projectName, caseSetPath, caseStorePath, destDir);
     }
 
-    public void generateSoapUIProject(String projectName, String caseSetPath, String caseStorePath, String destDir) throws Exception {
+    public static String generateSoapUIProject(String projectName, String caseSetPath, String caseStorePath, String destDir) throws Exception {
         //make a folder
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = df.format(new Date());
@@ -43,7 +44,7 @@ public class GenerateSoapUIProject {
         Document document = generateProject(projectName);
         Element root = document.getRootElement();
 
-        //read excel
+        //readFile excel
         Map<String, List<String>> suiteMap = getSuiteMap(caseSetPath);
 
         //add suites to project
@@ -54,17 +55,19 @@ public class GenerateSoapUIProject {
         }
 
         //write project to file
-        StringUtil.writeXmlToFile(document, parentPath.toString() + "\\" + projectName + ".xml");
+        String projectFilePath = parentPath.toString() + "\\" + projectName + ".xml";
+        StringUtil.writeXmlToFile(document, projectFilePath);
 
         //get config.properties
         generateConfigFile(parentPath.toString());
         System.out.println("Generate project successful in " + parentPath.toString());
+        return projectFilePath;
     }
 
 
-    private Element generateSuite(String suiteName, List<String> cases, String caseStorePath) throws DocumentException {
+    private static Element generateSuite(String suiteName, List<String> cases, String caseStorePath) throws DocumentException {
         SAXReader reader = new SAXReader();
-        Document suiteDoc = reader.read(new File(suitePath));
+        Document suiteDoc = reader.read(suiteStream);
         Element suiteRoot = suiteDoc.getRootElement();
         Element suiteClone = (Element) suiteRoot.clone();
 
@@ -81,16 +84,16 @@ public class GenerateSoapUIProject {
         return suiteClone;
     }
 
-    private void setIdAndNameToElement(Element element, String name) {
+    private static void setIdAndNameToElement(Element element, String name) {
         Attribute caseIdAttr = element.attribute("id");
         Attribute caseNameAttr = element.attribute("name");
         caseIdAttr.setValue(StringUtil.generateId());
         caseNameAttr.setValue(name);
     }
 
-    private Document generateProject(String projectName) throws DocumentException, IOException {
+    private static Document generateProject(String projectName) throws DocumentException, IOException {
         SAXReader reader = new SAXReader();
-        Document projectDoc = reader.read(new File(projectPath));
+        Document projectDoc = reader.read(projectStream);
         Element projectRoot = projectDoc.getRootElement();
 
         Document document = DocumentHelper.createDocument();
@@ -102,15 +105,15 @@ public class GenerateSoapUIProject {
         root.addAttribute("id", StringUtil.generateId());
 
         Element afterLoadScript = root.element("afterLoadScript");
-        afterLoadScript.setText(StringUtil.getFileContent(loadScriptPath));
+        afterLoadScript.setText(StringUtil.getFileContent(loadScriptStream));
         Element afterRunScript = root.element("afterRunScript");
-        afterRunScript.setText(StringUtil.getFileContent(tearDownScriptPath));
+        afterRunScript.setText(StringUtil.getFileContent(tearDownScriptStream));
         return document;
     }
 
-    private Map<String, List<String>> getSuiteMap(String caseSetPath) throws Exception {
+    private static Map<String, List<String>> getSuiteMap(String caseSetPath) throws Exception {
         Map<String, List<String>> suiteMap = new HashMap<>();
-        HashMap<String, ArrayList<HashMap<String, String>>> excel = ExcelReader.loadFile(caseSetPath);
+        HashMap<String, ArrayList<HashMap<String, String>>> excel = ExcelUtil.readFile(caseSetPath);
         ArrayList<HashMap<String, String>> caseList = excel.get(TestCaseSet.TEST);
         for (HashMap<String, String> caseMap : caseList) {
             String suiteName = caseMap.get(TestCaseSet.TEST_SUITE.toLowerCase());
@@ -131,12 +134,13 @@ public class GenerateSoapUIProject {
     }
 
 
-    private void generateConfigFile(String destDir) throws IOException {
-        String configPath = GenerateSoapUIProject.class.getClassLoader().getResource("config.properties").getPath();
+    private static void generateConfigFile(String destDir) throws IOException {
+        File targetFile = new File(destDir + "\\config.properties");
+        OutputStream outStream = new FileOutputStream(targetFile);
 
-        File source = new File(configPath);
-        File dest = new File(destDir + "\\config.properties");
-        Files.copy(source.toPath(), dest.toPath());
+        byte[] buffer = new byte[configStream.available()];
+        configStream.read(buffer);
+        outStream.write(buffer);
     }
 
 }

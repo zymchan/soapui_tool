@@ -22,40 +22,42 @@ public class ExportCase {
     }
 
 
-    private void exportCase(String workProject, String destDir) throws Exception {
-        //read the xml file of the work project
-        SAXReader reader = new SAXReader();
+    public static void exportCase(String workProject, String destDir) {
+        try {
+            //readFile the xml file of the work project
+            SAXReader reader = new SAXReader();
 
-        Document projectDoc = reader.read(new File(workProject));
-        Element projectRoot = projectDoc.getRootElement();
-        List testSuites = projectRoot.elements("testSuite");
-        for (Object suiteObj : testSuites) {
-            Element suite = (Element) suiteObj;
-            String suiteName = suite.attributeValue("name");
-            List testCases = suite.elements("testCase");
-            for (Object caseObj : testCases) {
-                Element testCase = (Element) caseObj;
-                String caseName = testCase.attributeValue("name");
-//                System.out.println(testCase.asXML());
-                Attribute disabledAttr = testCase.attribute("disabled");
-                if (disabledAttr == null || disabledAttr.getValue().equals("false")) {
-                    //only export the
-                    try {
-                        String path = destDir + "\\" + suiteName + "\\" + caseName + ".xml";
+            Document projectDoc = reader.read(new File(workProject));
+            Element projectRoot = projectDoc.getRootElement();
+            List testSuites = projectRoot.elements("testSuite");
+            for (Object suiteObj : testSuites) {
+                Element suite = (Element) suiteObj;
+                String suiteName = suite.attributeValue("name");
+                List testCases = suite.elements("testCase");
+                for (Object caseObj : testCases) {
+                    Element testCase = (Element) caseObj;
+                    String caseName = testCase.attributeValue("name");
+                    Attribute disabledAttr = testCase.attribute("disabled");
+                    if (disabledAttr == null || disabledAttr.getValue().equals("false")) {
+                        try {
+                            String path = destDir + "\\" + suiteName + "\\" + caseName + ".xml";
 
-                        Document document = DocumentHelper.createDocument();
-                        Object testCaseClone = testCase.clone();
-                        document.add((Element) testCaseClone);
-                        StringUtil.writeXmlToFile(document, path);
-                        System.out.println("Export " + suiteName + "\\" + caseName + ".xml successful!");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.err.println("Export " + suiteName + "\\ " + caseName + ".xml failed! Error message:" + e.getMessage());
+                            Document document = DocumentHelper.createDocument();
+                            Object testCaseClone = testCase.clone();
+                            document.add((Element) testCaseClone);
+                            StringUtil.writeXmlToFile(document, path);
+                            System.out.println("Export " + suiteName + "\\" + caseName + ".xml successful!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.err.println("Export " + suiteName + "\\ " + caseName + ".xml failed! Error message:" + e.getMessage());
+                        }
                     }
                 }
             }
+            System.out.println("Test case export to " + destDir);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        System.out.println("Test case export to " + destDir);
     }
 
 

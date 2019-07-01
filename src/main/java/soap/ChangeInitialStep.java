@@ -4,14 +4,10 @@ import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.junit.Test;
 import soap.util.StringUtil;
-import soap.util.TestCaseSet;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ChangeInitialStep {
 
@@ -29,7 +25,7 @@ public class ChangeInitialStep {
 
 
     public void change(String caseStorePath) throws IOException, DocumentException {
-        //read the xml file of the work project
+        //readFile the xml file of the work project
         for (File suiteFile : new File(caseStorePath).listFiles()) {
             if (suiteFile.isDirectory()) {
                 String suiteName = suiteFile.getName();
@@ -46,7 +42,7 @@ public class ChangeInitialStep {
 
 
     public void changeInitialStep(String casePath) throws DocumentException, IOException {
-        //read the xml file of the work project
+        //readFile the xml file of the work project
         SAXReader reader = new SAXReader();
         Document caseDoc = reader.read(new File(casePath));
         Element caseRoot = caseDoc.getRootElement();
@@ -56,7 +52,6 @@ public class ChangeInitialStep {
             String stepName = testStep.attributeValue("name");
             if (stepName.equals("Initial")) {
                 Element scriptElement = testStep.element("config").element("script");
-//                scriptElement.addCDATA(StringUtil.getFileContent(initialScriptPath));
                 scriptElement.setText(StringUtil.getFileContent(initialScriptPath));
                 break;
             }

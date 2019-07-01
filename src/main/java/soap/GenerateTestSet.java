@@ -1,5 +1,6 @@
 package soap;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -12,7 +13,6 @@ import soap.util.TestCaseSet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -20,42 +20,43 @@ import java.util.*;
 
 public class GenerateTestSet {
 
+    private static final Logger logger = Logger.getLogger(GenerateTestSet.class.getName());
+
 
     @Test
     public void test() {
         String casePath = "Q:\\CTAutomation\\JP_API\\TestCase";
         String destDir = "Q:\\CTAutomation\\JP_API\\RunSet";
-        try {
-            generateTestSet(casePath, destDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        generateTestSet(casePath, destDir);
     }
 
-
-    private void generateTestSet(String casePath, String destDir) throws IOException {
-
-        List<Map<String, String>> maps = new ArrayList<>();
-        for (File suiteFile : new File(casePath).listFiles()) {
-            if (suiteFile.isDirectory()) {
-                String suiteName = suiteFile.getName();
-                for (File caseFile : suiteFile.listFiles()) {
-                    if (caseFile.isFile() && caseFile.getName().endsWith(".xml")) {
-                        String caseName = caseFile.getName().replace(".xml", "");
-                        Map<String, String> map = new HashMap<>();
-                        map.put(TestCaseSet.TEST_CASE, caseName);
-                        map.put(TestCaseSet.TEST_SUITE, suiteName);
-                        map.put(TestCaseSet.DISABLE, "");
-                        maps.add(map);
+    public static void generateTestSet(String casePath, String destDir) {
+        try {
+            List<Map<String, String>> maps = new ArrayList<>();
+            for (File suiteFile : new File(casePath).listFiles()) {
+                if (suiteFile.isDirectory()) {
+                    String suiteName = suiteFile.getName();
+                    for (File caseFile : suiteFile.listFiles()) {
+                        if (caseFile.isFile() && caseFile.getName().endsWith(".xml")) {
+                            String caseName = caseFile.getName().replace(".xml", "");
+                            Map<String, String> map = new HashMap<>();
+                            map.put(TestCaseSet.TEST_CASE, caseName);
+                            map.put(TestCaseSet.TEST_SUITE, suiteName);
+                            map.put(TestCaseSet.DISABLE, "");
+                            maps.add(map);
+                        }
                     }
                 }
             }
+            writeDataToExcel(maps, destDir);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        writeDataToExcel(maps, destDir);
+
     }
 
 
-    private void writeDataToExcel(List<Map<String, String>> maps, String destDir) {
+    private static void writeDataToExcel(List<Map<String, String>> maps, String destDir) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = df.format(new Date());
         Path parentPath = Paths.get(destDir, date);
@@ -94,7 +95,7 @@ public class GenerateTestSet {
         }
     }
 
-    private void insertCell(XSSFRow row, int columnIndex, String value, CellStyle style) {
+    private static void insertCell(XSSFRow row, int columnIndex, String value, CellStyle style) {
         XSSFCell cell = row.createCell(columnIndex);
         cell.setCellValue(value);
         if (style != null) {

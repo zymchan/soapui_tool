@@ -3,23 +3,23 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter
 
 
 //Create folder
-String projectReportPath = context.expand('${#Project#projectReportPath}')
 String projectName = runner.project.name
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
 
+String projectReportPath = groovyUtils.projectPath + "\\report\\" + projectName
 
-Date date = new Date()
-def now = date.format("yyyy-MM-dd-HH-mm-ss")
-def reportDir = new File(projectReportPath + "/" + projectName + "/" + now)
+File reportDir = new File(projectReportPath)
 if (!reportDir.exists()) {
     reportDir.mkdirs()
 }
 
-//
-String reportName = runner.project.name + "_AutomationTestReport_" + now
-//String reportPath = "C:\\tempReport\\Extent.html"
-String reportPath = reportDir.toString() + "/" + reportName + ".html"
+Date date = new Date()
+String now = date.format("yyyy-MM-dd-HH-mm-ss")
+String reportFileName = projectName + "_AutomationTestReport_" + now
+String reportFilePath = projectReportPath + "\\" + reportFileName + ".html"
 
-ExtentHtmlReporter html = new ExtentHtmlReporter(reportPath)
+
+ExtentHtmlReporter html = new ExtentHtmlReporter(reportFilePath)
 ExtentReports extent = new ExtentReports()
 extent.attachReporter(html)
 
@@ -34,7 +34,7 @@ runner.results.each { testSuiteResult ->
             testEx.assignCategory(tag)
 
             int intLoop = 0
-            def pre = ""
+            String pre = ""
             for (testStepResult in testCaseResult.getResults()) {
                 // Get step
                 def testStep = testStepResult.getTestStep()
@@ -139,4 +139,4 @@ runner.results.each { testSuiteResult ->
 }
 
 extent.flush()
-log.info "Report path: " + reportPath
+log.info "Report path: " + reportFilePath
