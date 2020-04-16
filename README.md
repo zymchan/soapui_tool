@@ -1,12 +1,24 @@
 # soapui_tool
 
+
+<h2>本工具的作用</h2>
+     <p>如下面描述，本工具有三个功能:</p>
+     <p> 1. 支持将你已有的soapUI Project的用例快速导出到固定的目录。</p>
+     <p> 2. 根据功能1导出的用例目录中的用例，生成一个excel文件，此文件能做后面执行用例的控制界面使用。不想要执行的case在对应的Disable标注"Y"即可。</p>
+     <p> 3. 最后一个功能是关联前两个功能的目录以及excel文件，执行case。执行的过程会先生成一个soapUI的project文件，然后再自动执行这个project下的所有case。 同时这个project会附带我已经写好的extent report代码，能为你生成一个漂亮的report。同时你以后再在这个生成的project上写case，直接执行这个project也会有report生成。快来试试吧！</p>
+    
+    
+     
+     
 <h2>配置前工作</h2>
     <p>确保电脑正确安装并配置了jdk</p>
     <p>确保电脑安装了maven</p>
-    <p>安装SoapUI, 记住SoapUI的安装路径，将bin目录加入电脑的path中，例如我的就是：C:\Program Files\SmartBear\SoapUI-5.5.0\bin</p>    
     <p>获取项目，在项目的根目录执行mvn clean install，会在target目录下生成jar包，取有相关依赖那个，修改jar包名称为soap_tool.jar</p>
-    <p>解压项目中的ext.zip文件，把里面jar包放入soapui的ext目录中</p>
-    
+    <p>安装SoapUI, 记住SoapUI的安装路径，将bin目录加入电脑的path中，例如我的就是：C:\Program Files\SmartBear\SoapUI-5.5.0\bin</p> 
+    <p>解压项目中的ext.zip文件，把里面jar包放入soapui的ext目录中，</p>
+    如果中文出现乱码，记得将你本地电脑添加变量JAVA_TOOL_OPTIONS，值为-Dfile.encoding=UTF-8。最后记得重启你已经打开的应用。
+ 
+
 
 <h2>用法</h2>
 当前支持三个功能，-export 用例导出， -excel 生成excel的set文件用来控制用例执行， -execute 执行用例
