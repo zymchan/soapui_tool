@@ -59,7 +59,7 @@ public class GenerateSoapUIProject {
         StringUtil.writeXmlToFile(document, projectFilePath);
 
         //get config.properties
-        generateConfigFile(parentPath.toString());
+//        generateConfigFile(parentPath.toString());
         System.out.println("Generate project successful in " + parentPath.toString());
         return projectFilePath;
     }

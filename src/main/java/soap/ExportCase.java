@@ -15,7 +15,7 @@ public class ExportCase {
 
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         String workProject = "C:\\Users\\q1425712\\Desktop\\soap\\projects\\20190624161852\\My Project 0624.xml";
         String destDir = "Q:\\CTAutomation\\JP_API\\TestCase";
         exportCase(workProject, destDir);

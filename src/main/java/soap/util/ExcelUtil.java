@@ -18,7 +18,6 @@ public class ExcelUtil {
     private static final Logger logger = Logger.getLogger(ExcelUtil.class.getName());
 
     public static HashMap<String, ArrayList<HashMap<String, String>>> readFile(String filePath) throws Exception {
-
         XSSFWorkbook curXssfWorkBook;
         HashMap<String, ArrayList<HashMap<String, String>>> dataObject = new HashMap<>();
 
@@ -26,7 +25,6 @@ public class ExcelUtil {
         OPCPackage pkg = OPCPackage.open(filePath, PackageAccess.READ);
         curXssfWorkBook = new XSSFWorkbook(pkg);
         pkg.revert();
-
 
         for (int i = 0; i < curXssfWorkBook.getNumberOfSheets(); i++) {
             logger.debug("Read sheet : " + curXssfWorkBook.getSheetName(i));

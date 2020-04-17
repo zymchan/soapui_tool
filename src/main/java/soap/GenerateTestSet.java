@@ -1,10 +1,8 @@
 package soap;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.*;
 import org.junit.Test;
@@ -12,7 +10,6 @@ import soap.util.TestCaseSet;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;

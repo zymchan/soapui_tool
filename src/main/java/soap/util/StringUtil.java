@@ -1,6 +1,5 @@
 package soap.util;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import java.io.*;
@@ -47,22 +46,22 @@ public class StringUtil {
     public static String getFileContent(String filePath) throws IOException {
         String str;
         InputStream is = new FileInputStream(filePath);
-        int iAvail = is.available();
-        byte[] bytes = new byte[iAvail];
-        is.read(bytes);
-        str = new String(bytes);
-        is.close();
-        return str;
+        return streamToString(is);
     }
-    
-    public static String getFileContent(InputStream inputStream) throws IOException {
-        String str;      
+
+    private static String streamToString(InputStream inputStream) throws IOException {
+        String str;
         int iAvail = inputStream.available();
         byte[] bytes = new byte[iAvail];
         inputStream.read(bytes);
         str = new String(bytes);
         inputStream.close();
         return str;
+    }
+
+    public static String getFileContent(InputStream inputStream) throws IOException {
+        String str;
+        return streamToString(inputStream);
     }
 
     public static void writeXmlToFile(Document document, String fileName) throws IOException {

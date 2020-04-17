@@ -15,7 +15,7 @@ public class ChangeInitialStep {
 
     @Test
     public void test() {
-        String caseStorePath = "C:\\Users\\q1425712\\Desktop\\soap\\testcases";
+        String caseStorePath = "C:\\testcases";
         try {
             change(caseStorePath);
         } catch (IOException | DocumentException e) {
