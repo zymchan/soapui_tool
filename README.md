@@ -43,3 +43,7 @@
    java -jar soap_tool -execute "Q:\CTAutomation\JP_API\RunSet\SmokeTest\TestCaseSet.xlsx" "Q:\CTAutomation\JP_API\TestCase" "projectName"
 </pre>
 <p>"Q:\CTAutomation\JP_API\RunSet\SmokeTest\TestCaseSet.xlsx"为管理用例执行的excel文件，你可以在这里管理你需要执行的用例，"Q:\CTAutomation\JP_API\TestCase"为将用例导出后的路径。"projectName"是可选的参数，用来指定你所执行的项目的名称。执行完这条命令，会根据TestCaseSet.xlsx中的用例管理情况生成一个projectName.xml的SoapUI项目，同时执行这个文件，得到结果，并生成报告</p>
+
+
+<h2>最后的废话</h2>
+在实际项目的时候，我是将测试用例的测试数据放在数据库的，所以在项目中能发现有Initial Step相关的groovy代码和功能，同时有一个config.properties的配置文件来放相关的公共参数。Initial step是作为测试用例的的第一个step，会第一个执行来将用例相关的数据从数据库取出。感兴趣可以自己看下代码。
